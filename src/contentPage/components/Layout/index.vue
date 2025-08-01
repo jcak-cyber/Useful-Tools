@@ -6,11 +6,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRootNode } from "../../hooks/useRootNode";
+import { onMounted, onUnmounted, ref } from "vue";
+import { useKeyPress } from "../../hooks/useKeyPress";
 
 const showBlurBox = ref(false);
-const rootNode = useRootNode();
+const { bindKeyPress, removeKeyPress } = useKeyPress(() => {
+  showBlurBox.value = !showBlurBox.value;
+});
+
+onMounted(() => {
+  bindKeyPress();
+});
+
+onUnmounted(() => {
+  removeKeyPress();
+});
 
 chrome.runtime.onMessage.addListener((message: Tools.MessageBody) => {
   console.log("content script received message:", message);
@@ -19,7 +29,6 @@ chrome.runtime.onMessage.addListener((message: Tools.MessageBody) => {
   if (action === "TO_CONTENT_SCRIPT") {
     const { value } = data;
     showBlurBox.value = value;
-    console.log(rootNode);
   }
 
   return false;
