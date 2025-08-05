@@ -7,4 +7,8 @@ declare namespace Tools {
       [key: string]: ?any;
     };
   }
+
+  interface ToolsData {
+    rest?: boolean;
+  }
 }

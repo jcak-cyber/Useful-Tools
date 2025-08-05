@@ -15,7 +15,8 @@
 
 <script setup lang="ts">
 import { NSwitch } from "naive-ui";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { getStorageByPopup } from "../../../utils/customLocalStorage";
 
 const toolsMenuList = ref<Popup.ToolsMenu[]>([
   {
@@ -24,6 +25,18 @@ const toolsMenuList = ref<Popup.ToolsMenu[]>([
     value: false,
   },
 ]);
+
+onMounted(async () => {
+  const toolsData: Tools.ToolsData =
+    (await getStorageByPopup("toolsData")) || {};
+
+  if (toolsData["rest"]) {
+    toolsMenuList.value = toolsMenuList.value.map((item) => {
+      return { ...item, value: toolsData.rest || item.value };
+    });
+  }
+  console.log("toolsData", toolsData);
+});
 
 const handleSwitchChange = async (value: boolean, key: string) => {
   switch (key) {

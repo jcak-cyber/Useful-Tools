@@ -1,34 +1,37 @@
 <template>
-  <div class="layout-container" v-if="showBlurBox">
-    <div class="blur-box" />
-    <div class="tip-box">暂时离开一下，稍后就回来...</div>
+  <div class="layout-container">
+    <BlurBox ref="blurBox" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
-import { useKeyPress } from "../../hooks/useKeyPress";
+import { ref } from "vue";
 
-const showBlurBox = ref(false);
-const { bindKeyPress, removeKeyPress } = useKeyPress(() => {
-  showBlurBox.value = !showBlurBox.value;
-});
+import BlurBox from "../BlurBox/index.vue";
+import { getStorage, setStorage } from "../../../utils/customLocalStorage";
 
-onMounted(() => {
-  bindKeyPress();
-});
-
-onUnmounted(() => {
-  removeKeyPress();
-});
+const blurBox = ref<InstanceType<typeof BlurBox>>();
 
 chrome.runtime.onMessage.addListener((message: Tools.MessageBody) => {
   console.log("content script received message:", message);
   const { action, data } = message;
 
+  const toolsData: Tools.ToolsData = getStorage("toolsData") || {};
+
   if (action === "TO_CONTENT_SCRIPT") {
-    const { value } = data;
-    showBlurBox.value = value;
+    const { value, key } = data;
+    switch (key) {
+      case "rest":
+        toolsData[key] = value;
+
+        blurBox.value?.setVisible(value);
+        break;
+
+      default:
+        break;
+    }
+
+    setStorage("toolsData", toolsData);
   }
 
   return false;
