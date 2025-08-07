@@ -1,7 +1,10 @@
 <template>
   <div class="blur-container" v-if="showBlurBox">
     <div class="blur-box" />
-    <div class="tip-box">暂时离开一下，稍后就回来...</div>
+    <div class="tip-box">
+      <div class="line">暂时离开一下，稍后就回来...</div>
+      <div class="line">急事请电话联系:13698161685</div>
+    </div>
   </div>
 </template>
 
