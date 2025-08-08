@@ -1,5 +1,5 @@
 <template>
-  <div class="blur-container" v-if="showBlurBox">
+  <div class="blur-container" v-if="showBlurBox" ref="blurContainer">
     <div class="blur-box" />
     <div class="tip-box">
       <div class="line">暂时离开一下，稍后就回来...</div>
@@ -9,10 +9,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, defineExpose } from "vue";
+import { onMounted, onUnmounted, ref, defineExpose, watch } from "vue";
 import { useKeyPress } from "../../../hooks/useKeyPress";
 import { getStorage, setStorage } from "../../../utils/customLocalStorage";
 
+const timer = ref<number>();
+const blurContainer = ref<HTMLDivElement>();
 const showBlurBox = ref(false);
 const toolsData: Tools.ToolsData = getStorage("toolsData") || {};
 
