@@ -26,7 +26,7 @@ const { start, stop } = storageListener<Tools.ToolsData>(
   (value) => {
     if (!globalStore.canEditStorage && !_.isEqual(value, oldStorage.value)) {
       console.log("非法修改storage,正在还原");
-      setStorage("toolsData", oldStorage.value);
+      setStorage("toolsData", oldStorage.value, false);
     }
     if (globalStore.canEditStorage && !_.isEqual(value, oldStorage.value)) {
       console.log("正常修改storage,执行中");
@@ -58,7 +58,6 @@ chrome.runtime.onMessage.addListener((message: Tools.MessageBody) => {
     switch (key) {
       case "rest":
         toolsData[key] = value;
-        globalStore.setCanEditStorage(true);
         blurBox.value?.setVisible(value);
 
         break;

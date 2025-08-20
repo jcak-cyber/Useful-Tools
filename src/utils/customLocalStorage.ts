@@ -1,3 +1,5 @@
+import { useGlobalStore } from "../stores";
+
 export const getStorage = (key: string): any => {
   const data = localStorage.getItem(key);
   try {
@@ -8,7 +10,16 @@ export const getStorage = (key: string): any => {
   }
 };
 
-export const setStorage = (key: string, value: any): void => {
+export const setStorage = (
+  key: string,
+  value: any,
+  canEdit: boolean = true
+): void => {
+  if (canEdit) {
+    const globalStore = useGlobalStore();
+    globalStore.setCanEditStorage(true);
+  }
+
   localStorage.setItem(key, JSON.stringify(value));
 };
 

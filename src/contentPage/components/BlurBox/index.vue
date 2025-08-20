@@ -12,17 +12,14 @@
 import { onMounted, ref, defineExpose } from "vue";
 import { useEventListener } from "../../../hooks/useEventListener";
 import { getStorage, setStorage } from "../../../utils/customLocalStorage";
-import { useGlobalStore } from "../../../stores/index";
 const blurContainer = ref<HTMLDivElement>();
 const showBlurBox = ref(false);
 const toolsData: Tools.ToolsData = getStorage("toolsData") || {};
-const globalStore = useGlobalStore();
 
 const { bindListener: bindKeyPress } = useEventListener<KeyboardEvent>(
   "keydown",
   (event) => {
     if (event.ctrlKey && event.altKey && event.key === "b") {
-      globalStore.setCanEditStorage(true);
       showBlurBox.value = !showBlurBox.value;
       toolsData["rest"] = showBlurBox.value;
       setStorage("toolsData", toolsData);
