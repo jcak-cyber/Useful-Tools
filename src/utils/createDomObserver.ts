@@ -16,7 +16,6 @@ export const createDomObserver = (
   }
 
   observer = new MutationObserver((mutations) => {
-    console.log("createDomObserver: 检测到DOM变化", mutations.length, "个变化");
     mutations.forEach((mutation) => {
       callback(mutation);
     });
@@ -25,7 +24,10 @@ export const createDomObserver = (
   const observerConfig = config || {
     childList: true, // 观察直接子节点
     subtree: true, // 观察所有后代节点
-    attributes: false, // 不观察属性变化
+    attributes: true, // 观察属性变化
+    attributeOldValue: true, // 记录属性旧值
+    characterData: false, // 不观察文本内容变化
+    attributeFilter: ["id", "class", "style"], // 只观察关键属性变化
   };
 
   try {

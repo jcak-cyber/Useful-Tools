@@ -1,1 +1,1 @@
-declare module 'codeflask';
+declare module "lodash-es";

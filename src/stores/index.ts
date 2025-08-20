@@ -1,1 +1,2 @@
-export * from "./modules/fileStore";
+export * from "./modules/useGlobal";
+export * from "./deploy/createPinia";

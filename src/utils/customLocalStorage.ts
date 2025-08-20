@@ -1,6 +1,11 @@
 export const getStorage = (key: string): any => {
   const data = localStorage.getItem(key);
-  return data ? JSON.parse(data) : null;
+  try {
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };
 
 export const setStorage = (key: string, value: any): void => {
@@ -37,4 +42,33 @@ export const getStorageByPopup = (key: string) => {
       );
     });
   });
+};
+
+export const storageListener = <T>(
+  key: string,
+  delay: number = 400,
+  callback: (value: T) => boolean
+) => {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const start = () => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      const flag = callback(getStorage(key));
+      if (flag) {
+        stop();
+        return;
+      }
+      start();
+    }, delay);
+  };
+
+  const stop = () => {
+    if (timer) clearTimeout(timer);
+    timer = null;
+  };
+
+  return {
+    start,
+    stop,
+  };
 };
