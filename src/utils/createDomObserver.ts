@@ -1,5 +1,13 @@
+import { logger } from "./logger";
+
 let observer: MutationObserver | null = null;
 
+/**
+ * 创建 DOM 观察器
+ * @param target - 要观察的目标元素
+ * @param callback - 变化回调函数
+ * @param config - 观察器配置（可选）
+ */
 export const createDomObserver = (
   target: HTMLElement,
   callback: (mut: MutationRecord) => void,
@@ -8,10 +16,11 @@ export const createDomObserver = (
   // 清理之前的观察器
   if (observer) {
     observer.disconnect();
+    observer = null;
   }
 
   if (!target) {
-    console.error("createDomObserver: 目标元素不存在");
+    logger.error("createDomObserver: 目标元素不存在");
     return;
   }
 
@@ -21,7 +30,7 @@ export const createDomObserver = (
     });
   });
 
-  const observerConfig = config || {
+  const observerConfig: MutationObserverInit = config || {
     childList: true, // 观察直接子节点
     subtree: true, // 观察所有后代节点
     attributes: true, // 观察属性变化
@@ -32,18 +41,21 @@ export const createDomObserver = (
 
   try {
     observer.observe(target, observerConfig);
-    console.log("createDomObserver: 观察器已启动", observerConfig);
+    logger.log("createDomObserver: 观察器已启动", observerConfig);
   } catch (error) {
-    console.error("createDomObserver: 启动观察器失败", error);
+    logger.error("createDomObserver: 启动观察器失败", error);
   }
 };
 
+/**
+ * 断开 DOM 观察器
+ */
 export const disconnectObserver = () => {
   if (!observer) {
-    console.log("disconnectObserver: 没有活动的观察器");
+    logger.log("disconnectObserver: 没有活动的观察器");
     return;
   }
   observer.disconnect();
   observer = null;
-  console.log("disconnectObserver: 观察器已断开");
+  logger.log("disconnectObserver: 观察器已断开");
 };

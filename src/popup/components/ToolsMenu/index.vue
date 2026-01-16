@@ -17,6 +17,8 @@
 import { NSwitch } from "naive-ui";
 import { ref, onMounted } from "vue";
 import { getStorageByPopup } from "../../../utils/customLocalStorage";
+import { STORAGE_KEYS, MESSAGE_ACTIONS } from "../../../constants";
+import { logger } from "../../../utils/logger";
 
 const toolsMenuList = ref<Popup.ToolsMenu[]>([
   {
@@ -27,44 +29,71 @@ const toolsMenuList = ref<Popup.ToolsMenu[]>([
 ]);
 
 onMounted(async () => {
-  const toolsData: Tools.ToolsData =
-    (await getStorageByPopup("toolsData")) || {};
+  try {
+    const toolsData = (await getStorageByPopup<Tools.ToolsData>(
+      STORAGE_KEYS.TOOLS_DATA
+    )) || {};
 
-  if (toolsData["rest"]) {
-    toolsMenuList.value = toolsMenuList.value.map((item) => {
-      return { ...item, value: toolsData.rest || item.value };
-    });
+    if (toolsData.rest !== undefined) {
+      toolsMenuList.value = toolsMenuList.value.map((item) => {
+        if (item.key === "rest") {
+          return { ...item, value: toolsData.rest || false };
+        }
+        return item;
+      });
+    }
+    logger.log("工具数据加载完成", toolsData);
+  } catch (error) {
+    logger.error("加载工具数据失败:", error);
   }
-  console.log("toolsData", toolsData);
 });
 
+/**
+ * 处理开关变化
+ */
 const handleSwitchChange = async (value: boolean, key: string) => {
-  switch (key) {
-    case "rest":
-      // 获取当前活动标签页
-      chrome.tabs.query(
-        {
-          active: true,
-          currentWindow: true,
-        },
-        (tabs) => {
-          if (tabs[0] && tabs[0].id) {
-            console.log("Sending message to tab:", tabs[0].id);
+  try {
+    switch (key) {
+      case "rest":
+        // 获取当前活动标签页
+        chrome.tabs.query(
+          {
+            active: true,
+            currentWindow: true,
+          },
+          (tabs) => {
+            const tab = tabs[0];
+            if (!tab?.id) {
+              logger.error("未找到活动标签页");
+              return;
+            }
 
-            chrome.tabs.sendMessage(tabs[0].id, {
-              action: "TO_CONTENT_SCRIPT",
-              data: { key, value },
-            });
-          } else {
-            console.error("No active tab found");
+            logger.log(`向标签页 ${tab.id} 发送消息`);
+
+            chrome.tabs.sendMessage(
+              tab.id,
+              {
+                action: MESSAGE_ACTIONS.TO_CONTENT_SCRIPT,
+                data: { key, value },
+              },
+              (response) => {
+                if (chrome.runtime.lastError) {
+                  logger.error("发送消息失败:", chrome.runtime.lastError);
+                } else {
+                  logger.log("消息发送成功", response);
+                }
+              }
+            );
           }
-        }
-      );
-      break;
+        );
+        break;
 
-    default:
-      console.log("Unknown tool key:", key);
-      break;
+      default:
+        logger.warn(`未知的工具键: ${key}`);
+        break;
+    }
+  } catch (error) {
+    logger.error("处理开关变化时发生错误:", error);
   }
 };
 </script>
