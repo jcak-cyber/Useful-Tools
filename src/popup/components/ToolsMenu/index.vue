@@ -3,12 +3,8 @@
     <div class="tools-menu-item" v-for="item in toolsMenuList" :key="item.key">
       <div class="tools-menu-item-top">
         <div class="tools-menu-item-label">{{ item.label }}</div>
-        <NSwitch
-          v-model:value="item.value"
-          @update:value="(e:boolean)=>handleSwitchChange(e,item.key)"
-        />
+        <NSwitch v-model:value="item.value" @update:value="(e: boolean) => handleSwitchChange(e, item.key)" />
       </div>
-      <div class="tools-menu-item-bottom"></div>
     </div>
   </div>
 </template>
@@ -22,8 +18,18 @@ import { logger } from "../../../utils/logger";
 
 const toolsMenuList = ref<Popup.ToolsMenu[]>([
   {
-    label: "离开一下",
+    label: "离开一下 (ctrl+alt+b)",
     key: "rest",
+    value: false,
+  },
+  {
+    label: "计算器 (ctrl+alt+c)",
+    key: "calculator",
+    value: false,
+  },
+  {
+    label: "颜色提取器 (ctrl+alt+p)",
+    key: "colorPicker",
     value: false,
   },
 ]);
@@ -42,6 +48,24 @@ onMounted(async () => {
         return item;
       });
     }
+
+    if (toolsData.calculator !== undefined) {
+      toolsMenuList.value = toolsMenuList.value.map((item) => {
+        if (item.key === "calculator") {
+          return { ...item, value: toolsData.calculator || false };
+        }
+        return item;
+      });
+    }
+
+    if (toolsData.colorPicker !== undefined) {
+      toolsMenuList.value = toolsMenuList.value.map((item) => {
+        if (item.key === "colorPicker") {
+          return { ...item, value: toolsData.colorPicker || false };
+        }
+        return item;
+      });
+    }
     logger.log("工具数据加载完成", toolsData);
   } catch (error) {
     logger.error("加载工具数据失败:", error);
@@ -55,6 +79,8 @@ const handleSwitchChange = async (value: boolean, key: string) => {
   try {
     switch (key) {
       case "rest":
+      case "calculator":
+      case "colorPicker":
         // 获取当前活动标签页
         chrome.tabs.query(
           {
@@ -75,13 +101,6 @@ const handleSwitchChange = async (value: boolean, key: string) => {
               {
                 action: MESSAGE_ACTIONS.TO_CONTENT_SCRIPT,
                 data: { key, value },
-              },
-              (response) => {
-                if (chrome.runtime.lastError) {
-                  logger.error("发送消息失败:", chrome.runtime.lastError);
-                } else {
-                  logger.log("消息发送成功", response);
-                }
               }
             );
           }

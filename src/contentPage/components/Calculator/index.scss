@@ -1,0 +1,161 @@
+.calculator-container {
+  position: fixed;
+  width: 280px;
+  background: #ffffff;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10000;
+  user-select: none;
+  overflow: hidden;
+
+  .calculator-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+    color: #333;
+    cursor: move;
+    user-select: none;
+
+    .calculator-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .calculator-close {
+      background: transparent;
+      border: none;
+      color: #666;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+      transition: background-color 0.15s;
+
+      &:hover {
+        background-color: #e0e0e0;
+        color: #333;
+      }
+    }
+  }
+
+  .calculator-body {
+    padding: 16px;
+    background: #ffffff;
+  }
+
+  .calculator-display {
+    width: 100%;
+    min-height: 60px;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    .calculator-expression {
+      font-size: 12px;
+      color: #999;
+      text-align: right;
+      min-height: 18px;
+      word-break: break-all;
+    }
+
+    .calculator-value {
+      font-size: 24px;
+      font-weight: 500;
+      color: #333;
+      text-align: right;
+      word-break: break-all;
+      overflow-wrap: break-word;
+    }
+  }
+
+  .calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .calculator-btn {
+    height: 48px;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    background: #ffffff;
+    color: #333;
+
+    &:hover {
+      background: #f5f5f5;
+    }
+
+    &:active {
+      background: #eeeeee;
+    }
+
+    &.btn-operator {
+      background: #f5f5f5;
+      color: #333;
+      border-color: #d0d0d0;
+
+      &:hover {
+        background: #eeeeee;
+      }
+
+      &:active {
+        background: #e0e0e0;
+      }
+    }
+
+    &.btn-equals {
+      background: #333;
+      color: white;
+      border-color: #333;
+      grid-column: span 1;
+
+      &:hover {
+        background: #444;
+      }
+
+      &:active {
+        background: #222;
+      }
+    }
+
+    &.btn-clear {
+      background: #f5f5f5;
+      color: #666;
+      border-color: #d0d0d0;
+
+      &:hover {
+        background: #eeeeee;
+      }
+
+      &:active {
+        background: #e0e0e0;
+      }
+    }
+
+    &.btn-zero {
+      grid-column: span 2;
+    }
+  }
+}

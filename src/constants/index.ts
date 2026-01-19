@@ -11,6 +11,7 @@ export const STORAGE_KEYS = {
 export const MESSAGE_ACTIONS = {
   TO_CONTENT_SCRIPT: "TO_CONTENT_SCRIPT",
   POPUP_OPENED: "popupOpened",
+  CAPTURE_SCREENSHOT: "CAPTURE_SCREENSHOT",
 } as const;
 
 /** 快捷键配置 */
@@ -19,6 +20,16 @@ export const SHORTCUT_KEYS = {
     ctrl: true,
     alt: true,
     key: "b",
+  },
+  TOGGLE_CALCULATOR: {
+    ctrl: true,
+    alt: true,
+    key: "c",
+  },
+  TOGGLE_COLOR_PICKER: {
+    ctrl: true,
+    alt: true,
+    key: "p",
   },
 } as const;
 

@@ -1,6 +1,8 @@
 <template>
   <div class="layout-container">
     <BlurBox ref="blurBox" />
+    <Calculator ref="calculator" />
+    <ColorPicker ref="colorPicker" />
   </div>
 </template>
 
@@ -8,6 +10,8 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import _ from "lodash-es";
 import BlurBox from "../BlurBox/index.vue";
+import Calculator from "../Calculator/index.vue";
+import ColorPicker from "../ColorPicker/index.vue";
 import {
   getStorage,
   setStorage,
@@ -22,6 +26,8 @@ import {
 import { logger } from "../../../utils/logger";
 
 const blurBox = ref<InstanceType<typeof BlurBox>>();
+const calculator = ref<InstanceType<typeof Calculator>>();
+const colorPicker = ref<InstanceType<typeof ColorPicker>>();
 const oldStorage = ref<Tools.ToolsData>();
 const globalStore = useGlobalStore();
 
@@ -82,6 +88,18 @@ const handleMessage = (
       case "rest":
         toolsData[key] = value;
         blurBox.value?.setVisible(value);
+        setStorage(STORAGE_KEYS.TOOLS_DATA, toolsData);
+        break;
+
+      case "calculator":
+        toolsData[key] = value;
+        calculator.value?.setVisible(value);
+        setStorage(STORAGE_KEYS.TOOLS_DATA, toolsData);
+        break;
+
+      case "colorPicker":
+        toolsData[key] = value;
+        colorPicker.value?.setVisible(value);
         setStorage(STORAGE_KEYS.TOOLS_DATA, toolsData);
         break;
 
