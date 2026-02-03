@@ -1,69 +1,56 @@
-# name: CI
+name: CI
 
-# on:
-#   push:
-#     branches: [main, develop]
-#   pull_request:
-#     branches: [main, develop]
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
 
-# jobs:
-#   build:
-#     name: 构建与类型检查
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: 检出代码
-#         uses: actions/checkout@v4
-
-#       - name: 安装 pnpm
-#         uses: pnpm/action-setup@v4
-#         with:
-#           version: 9
-
-#       - name: 设置 Node.js
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: "20"
-#           cache: "pnpm"
-
-#       - name: 安装依赖
-#         run: pnpm install --frozen-lockfile
-
-#       - name: 类型检查
-#         run: pnpm exec vue-tsc --noEmit
-
-#       - name: 迭代版本号
-#         run: node .node/iteration-version.js -m ${{vars.MAJOR_VN}} -n ${{vars.MINOR_VN}}
-
-#       - name: 从 package.json 中读取版本号
-#         id: read_version
-#         run: |
-#           VERSION=$(jq -r .version package.json)
-#           echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
-
-#       - name: 创建 Release
-#         id: create_release
-#         uses: actions/create-release@v1
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           tag_name: v${{ steps.read_version.outputs.VERSION }}
-#           release_name: Release v${{ steps.read_version.outputs.VERSION }}
-#           draft: false
-#           prerelease: false
-
-#       - name: 构建
-#         run: pnpm run build
-name: learn-github-actions
-run-name: ${{ github.actor }} is learning GitHub Actions
-on: [push]
 jobs:
-  check-bats-version:
+  build:
+    name: 构建与类型检查
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: npm install -g bats
-      - run: bats -v
+          cache: "pnpm"
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 类型检查
+        run: pnpm exec vue-tsc --noEmit
+
+      - name: 迭代版本号
+        run: node .node/iteration-version.js -m ${{vars.MAJOR_VN}} -n ${{vars.MINOR_VN}}
+
+      - name: 从 package.json 中读取版本号
+        id: read_version
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: 创建 Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.read_version.outputs.VERSION }}
+          release_name: Release v${{ steps.read_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+
+      - name: 构建
+        run: pnpm run build
