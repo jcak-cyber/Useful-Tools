@@ -3,6 +3,12 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jcak-cyber/Useful-Tools.git",
+    "owner": "jcak-cyber",
+    "repo": "Useful-Tools"
+  },
   "scripts": {
     "dev": "vite -c vite.popup.config.ts",
     "build": "node --no-warnings ./scripts/build.js",
