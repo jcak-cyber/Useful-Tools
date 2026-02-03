@@ -35,5 +35,23 @@ jobs:
       - name: 迭代版本号
         run: node .node/iteration-version.js -m ${{vars.MAJOR_VN}} -n ${{vars.MINOR_VN}}
 
+      - name: 从 package.json 中读取版本号
+        id: read_version
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: 创建 Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.read_version.outputs.VERSION }}
+          release_name: Release v${{ steps.read_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          body_path: ./release-content.md
+
       - name: 构建
         run: pnpm run build
