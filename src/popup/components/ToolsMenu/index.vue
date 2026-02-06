@@ -1,9 +1,14 @@
 <template>
-  <div class="tools-menu">
-    <div class="tools-menu-item" v-for="item in toolsMenuList" :key="item.key">
-      <div class="tools-menu-item-top">
-        <div class="tools-menu-item-label">{{ item.label }}</div>
-        <NSwitch v-model:value="item.value" @update:value="(e: boolean) => handleSwitchChange(e, item.key)" />
+  <div class="container">
+    <!-- <div class="settings">
+      <Settings class="settings-icon" @click="handleOpenSettingPage" />
+    </div> -->
+    <div class="tools-menu">
+      <div class="tools-menu-item" v-for="item in toolsMenuList" :key="item.key">
+        <div class="tools-menu-item-top">
+          <div class="tools-menu-item-label">{{ item.label }}</div>
+          <NSwitch v-model:value="item.value" @update:value="(e: boolean) => handleSwitchChange(e, item.key)" />
+        </div>
       </div>
     </div>
   </div>
@@ -15,6 +20,7 @@ import { ref, onMounted } from "vue";
 import { getStorageByPopup } from "../../../utils/customLocalStorage";
 import { STORAGE_KEYS, MESSAGE_ACTIONS } from "../../../constants";
 import { logger } from "../../../utils/logger";
+// import { Settings } from "@vicons/ionicons5"
 
 const toolsMenuList = ref<Popup.ToolsMenu[]>([
   {
@@ -115,6 +121,10 @@ const handleSwitchChange = async (value: boolean, key: string) => {
     logger.error("处理开关变化时发生错误:", error);
   }
 };
+
+// const handleOpenSettingPage = () => {
+//   chrome.tabs.create({ url: "options.html" });
+// }
 </script>
 
 <style lang="scss" scoped>

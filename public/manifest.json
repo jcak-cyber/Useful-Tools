@@ -31,6 +31,10 @@
       "match_about_blank": true
     }
   ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true // 或 false 以在弹出窗口中打开
+  },
   "web_accessible_resources": [
     {
       "resources": ["popup/*", "contentPage/*", "assets/*", "js/*"],
